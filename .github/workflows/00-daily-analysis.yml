@@ -232,6 +232,7 @@ jobs:
           # 数据源
           # ==========================================
           TUSHARE_TOKEN: ${{ secrets.TUSHARE_TOKEN }}
+          TICKFLOW_API_KEY: ${{ secrets.TICKFLOW_API_KEY }}
           # Longbridge OpenAPI（美股/港股实时行情字段补充；不设则仅 YFinance/AkShare，无 [Longbridge] 调用）
           LONGBRIDGE_OAUTH_CLIENT_ID: ${{ vars.LONGBRIDGE_OAUTH_CLIENT_ID || secrets.LONGBRIDGE_OAUTH_CLIENT_ID }}
           LONGBRIDGE_OAUTH_TOKEN_CACHE_B64: ${{ secrets.LONGBRIDGE_OAUTH_TOKEN_CACHE_B64 }}
@@ -246,6 +247,15 @@ jobs:
           LONGBRIDGE_ENABLE_OVERNIGHT: ${{ vars.LONGBRIDGE_ENABLE_OVERNIGHT || secrets.LONGBRIDGE_ENABLE_OVERNIGHT }}
           LONGBRIDGE_PUSH_CANDLESTICK_MODE: ${{ vars.LONGBRIDGE_PUSH_CANDLESTICK_MODE || secrets.LONGBRIDGE_PUSH_CANDLESTICK_MODE }}
           LONGBRIDGE_PRINT_QUOTE_PACKAGES: ${{ vars.LONGBRIDGE_PRINT_QUOTE_PACKAGES || secrets.LONGBRIDGE_PRINT_QUOTE_PACKAGES }}
+          EFINANCE_PRIORITY: ${{ vars.EFINANCE_PRIORITY || secrets.EFINANCE_PRIORITY }}
+          AKSHARE_PRIORITY: ${{ vars.AKSHARE_PRIORITY || secrets.AKSHARE_PRIORITY }}
+          TUSHARE_PRIORITY: ${{ vars.TUSHARE_PRIORITY || secrets.TUSHARE_PRIORITY }}
+          PYTDX_PRIORITY: ${{ vars.PYTDX_PRIORITY || secrets.PYTDX_PRIORITY }}
+          PYTDX_HOST: ${{ vars.PYTDX_HOST || secrets.PYTDX_HOST }}
+          PYTDX_PORT: ${{ vars.PYTDX_PORT || secrets.PYTDX_PORT }}
+          PYTDX_SERVERS: ${{ vars.PYTDX_SERVERS || secrets.PYTDX_SERVERS }}
+          BAOSTOCK_PRIORITY: ${{ vars.BAOSTOCK_PRIORITY || secrets.BAOSTOCK_PRIORITY }}
+          YFINANCE_PRIORITY: ${{ vars.YFINANCE_PRIORITY || secrets.YFINANCE_PRIORITY }}
           
           # ==========================================
           # 搜索服务
@@ -260,7 +270,11 @@ jobs:
           MINIMAX_API_KEYS: ${{ secrets.MINIMAX_API_KEYS }}
           BRAVE_API_KEYS: ${{ secrets.BRAVE_API_KEYS }}
           SEARXNG_BASE_URLS: ${{ secrets.SEARXNG_BASE_URLS }}
-          SEARXNG_PUBLIC_INSTANCES_ENABLED: ${{ vars.SEARXNG_PUBLIC_INSTANCES_ENABLED || secrets.SEARXNG_PUBLIC_INSTANCES_ENABLED }}
+          SEARXNG_PUBLIC_INSTANCES_ENABLED: ${{ vars.SEARXNG_PUBLIC_INSTANCES_ENABLED || secrets.SEARXNG_PUBLIC_INSTANCES_ENABLED || 'true' }}
+          SOCIAL_SENTIMENT_API_KEY: ${{ secrets.SOCIAL_SENTIMENT_API_KEY }}
+          SOCIAL_SENTIMENT_API_URL: ${{ vars.SOCIAL_SENTIMENT_API_URL || secrets.SOCIAL_SENTIMENT_API_URL || 'https://api.adanos.org' }}
+          NEWS_STRATEGY_PROFILE: ${{ vars.NEWS_STRATEGY_PROFILE || secrets.NEWS_STRATEGY_PROFILE || 'medium' }}
+          NEWS_MAX_AGE_DAYS: ${{ vars.NEWS_MAX_AGE_DAYS || secrets.NEWS_MAX_AGE_DAYS || '7' }}
           
           # ==========================================
           # 通知渠道（可同时配置多个，全部推送）
@@ -411,6 +425,7 @@ jobs:
           echo ""
           echo "【数据源】"
           echo "  Tushare Token: $([ -n "$TUSHARE_TOKEN" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
+          echo "  TickFlow Key: $([ -n "$TICKFLOW_API_KEY" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
           if [ -n "$LONGBRIDGE_APP_KEY" ] && [ -n "$LONGBRIDGE_APP_SECRET" ] && [ -n "$LONGBRIDGE_ACCESS_TOKEN" ]; then
             echo "  Longbridge: ✅ 已配置（Legacy API Key）"
           elif [ -n "$LONGBRIDGE_OAUTH_CLIENT_ID" ] || { [ -n "$LONGBRIDGE_APP_KEY" ] && [ -z "$LONGBRIDGE_ACCESS_TOKEN" ]; }; then
@@ -426,6 +441,8 @@ jobs:
           echo "  MiniMax API Keys: $([ -n "$MINIMAX_API_KEYS" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
           echo "  Brave API Keys: $([ -n "$BRAVE_API_KEYS" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
           echo "  SearXNG Base URLs: $([ -n "$SEARXNG_BASE_URLS" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
+          echo "  Social Sentiment: $([ -n "$SOCIAL_SENTIMENT_API_KEY" ] && echo '✅ 已配置' || echo '⚪ 未配置')"
+          echo "  News Window: ${NEWS_STRATEGY_PROFILE:-medium}/${NEWS_MAX_AGE_DAYS:-7}天"
           case "${SEARXNG_PUBLIC_INSTANCES_ENABLED,,}" in
             0|false|no|off)
               echo "  SearXNG Public Instances: ❌ 已禁用"
